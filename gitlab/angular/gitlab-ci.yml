@@ -1,0 +1,33 @@
+image: node:latest
+
+stages:
+  - build
+  - test
+  - deploy
+
+before_script:
+  - echo "Installing dependencies..."
+  - npm install
+
+test:
+  stage: test
+  script:    
+  - node_modules/@angular/cli/bin/ng test --browsers PhantomJS --watch=false
+
+build:
+  stage: build
+  script:
+    - echo "Building..."
+    - npm run build
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Building..."
+    - npm run build
+    - echo "Publishing..."
+    - node_modules/.bin/surge ./dist/ci --domain ar-ci-app.surge.sh
+    - echo "Project is live at https://ar-ci-app.surge.sh"
+  only:
+    - master
+  environment: production
